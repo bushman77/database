@@ -1,0 +1,2 @@
+Sub BEASTLORD
+/return
