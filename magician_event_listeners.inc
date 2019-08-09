@@ -1,22 +1,11 @@
 Sub MAGICIAN
-	/if (!${Me.Pet.ID}) /casting "Shard of Air" gem10
+	/if (!${Me.Pet.ID}) /casting "Shard of Water" gem10
 	/call Buffs
 	/call Combat
 	/if (${combat} == 0 ) /varset petattack 0
 	/call CastQueue
 	/if (${combat}==1) /call Attack
 	/if (${Me.Buff[Desert Tarantula].ID} == 0 ) /casting "Desert Tarantula Saddle" item
-/return
-
-#event ToMe "<Phrogeater> tome"
-Sub Event_ToMe
-:Loop
-      /if (${Target.Distance}>20) /keypress w hold
-      /if (${Target.Distance}<20) /keypress w 
-      /face fast
-      /delay 1
-   /if (${Target.ID} && ${Target.Distance}>20) /goto :Loop
-   /if (${Target.Distance}<20) /keypress w 
 /return
 
 #event SummonPet "<Phrogeater> pet"
@@ -29,17 +18,23 @@ Sub Attack
   /doevents
   /call UpdateTarget
   /call SummonServant
+  /call SwarmPets
   /if (${petattack}==0) /call PetAttack
   /call Dot
   /if (${Me.SpellReady[Bolt of Molten Magma]} && ${Me.SpellReady[Twincast]}) /call TwincastNuke
-  /if (${Me.SpellReady[Beam of Razors]} && ${Me.PctMana} > 15) /call Nuke
+  |/if (${Me.SpellReady[Bolt of Molten Magma]}) /casting "Bolt of Molten Magma"
+  /if (${Me.SpellReady[Strike of Many]} && ${Me.PctMana} > 15) /call Nuke
   
+/return
+
+Sub SwarmPets
+  /if (${Me.AltAbility[Host of the Elements]}) /casting "Host of the Elements|alt"
+  /call FinishCasting
 /return
 
 Sub SummonServant
   /if (${servantcounter} == 0) /casting "Ruthless Servant" gem11
   /call ServantCounter
-  /echo ${servantcounter}
   /if (${servantcounter} > 100 ) /varset servantcounter 0
 /return
 
@@ -47,7 +42,7 @@ Sub Nuke
   /call UpdateTarget
   /face fast
   /delay 1
-  /casting "Beam of Razors" gem8
+  /casting "Strike of Many" gem8
   /call FinishCasting
 /return
 
@@ -114,7 +109,7 @@ Sub Event_Invite
 /return
 
 Sub Dot
-/if (${Spawn[${combattarget}]} == ${Target.ID}) /echo dot
+  /if (${Spawn[${combattarget}]} == ${Target.ID}) /echo dot
   /doevents
   /call UpdateTarget
   /delay 1
@@ -128,7 +123,7 @@ Sub Buffs
     /casting "Burnout XI" gem2
   } else {
   }
-  /if (!${Me.PetBuff[Velocity]}) {
+  /if (!${Me.PetBuff[Velocity]} && !${Me.PetBuff[Spirit of Tala'Tak]}) {
     /casting "Velocity" gem2
   } else {
   }
