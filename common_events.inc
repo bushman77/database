@@ -7,24 +7,6 @@ Sub Combat
   }
 /return
 
-Sub CombatStartSQL
-  /varset combat 1
-  /sqlite c:\macroquest2\partystate.db queue update combat set combat = 1, combattarget = ${Target.ID};
-  /if ( ${sqlite.clear[queue]} ) {
-  } else {
-    /echo BOOOOOO
-  }
-/return
-
-Sub CombatOverSQL
-  /varset combat 0
-  /sqlite c:\macroquest2\partystate.db queue update combat set combat = 0, combattarget = 0;
-  /if ( ${sqlite.clear[queue]} ) {
-  } else {
-    /echo BOOOOOO
-  }
-/return
-
 #event State "<#*#> state"
 Sub Event_State
   /bc _____________________________________ 
@@ -48,6 +30,22 @@ Sub Event_Exp
 Sub Event_StartLocation
   /varset startx ${Param1}
   /varset starty ${Param2}
+/return
+
+#event ToMe "<Phrogeater> tome"
+Sub Event_ToMe
+   /if (${Me.Class.ID} == 5) {
+   } else {
+     /target Phrogeater
+     :Loop
+       /if (${Target.Distance}>20) /keypress w hold
+       /if (${Target.Distance}<20) /keypress w 
+       /face fast
+       /delay 1
+     /if (${Target.ID} && ${Target.Distance}>20) /goto :Loop
+   }
+
+   /if (${Target.Distance}<20) /keypress w 
 /return
 
 
