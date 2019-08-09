@@ -10,13 +10,17 @@ Sub Main
   /echo BushBot Initialized
   :Loop
     /doevents
+	/if (${Me.Dead}) {
+	} else {
+	  /if (${Me.Class.ID} == 2) /call CLERIC
+	  /if (${Me.Class.ID} == 5) /call SHADOWKNIGHT
+	  /if (${Me.Class.ID} == 13) /call MAGICIAN
+	  /if (${Me.Class.ID} == 15) /call BEASTLORD
 	
-	/if (${Me.Class.ID} == 2) /call CLERIC
-	/if (${Me.Class.ID} == 5) /call SHADOWKNIGHT
-	/if (${Me.Class.ID} == 13) /call MAGICIAN
-	/if (${Me.Class.ID} == 15) /call BEASTLORD
-	/call CastQueue
-	
+	  /if (${Me.Class.ID} == 2 && ${Spawn[Phrogeater].PctHPs} > 80) /call CastQueue
+	  /if (${Me.Class.ID} != 2)  /call CastQueue
+
+	}
 	/delay 1   
    /goto :Loop
 /return
@@ -29,8 +33,13 @@ Sub CastQueue
   } else {
     /for b 1 to ${sqlite.rows[queue]}
 	  /if (${sqlite.result[queue ${b} type]} == ${Me.Class.ID}) {
-        /target ${sqlite.result[queue ${b} character]}
-	    /if (${Target.Distance} < 80) /cast ${Spell[${sqlite.result[queue ${b} buff]}]}
+	  
+        /echo ${Spell[${sqlite.result[queue ${b} buff]}]}
+		
+		/target ${sqlite.result[queue ${b} character]}
+	    
+		/if (${Target.Distance} < 80) /cast ${Spell[${sqlite.result[queue ${b} buff]}]}
+		
 	    /call FinishCasting
 	    /sqlite c:\macroquest2\partystate.db queue delete from buffs where character='${sqlite.result[queue ${b} character]}' and buff='${sqlite.result[queue ${b} buff]}';
 	  } else {
@@ -44,17 +53,3 @@ Sub CastQueue
   }
 /return
 
-Sub Roster
-  /declare x int local
-  /for x 0 to 5
-   /if (${Group.Member[${x}].ID}) {
-     /if ( ${Group.Member[${x}].PctHPs} < 86 ) {
-	   /target ${Group.Member[${x}]}
-	   /casting "Reverent Light" gem5
-	 } else {
-	 }
-   } else {
-   }
-  /next x
-  /delay 1
-/return
