@@ -1,0 +1,130 @@
+#turbo 80
+
+Sub Main
+  /echo BushBot Initialized
+  /declare doNuke string outer FALSE
+      
+  :Loop
+    /doevents
+	/if (${Me.Dead}) {
+	} else {
+	  /if (${Me.Class.ID} == 5 && !${Me.Moving}) {
+        /if (!${Me.Combat}) {
+		  /if (${Me.Standing}) /call SelfBuffs
+	      
+	    } else {
+		  /call DOTS
+	    }
+	  }
+	}
+	/delay 1   
+   /goto :Loop
+/return
+
+Sub DoINuke
+  
+  /if (${Me.Class.ID}) {
+    
+	/if (${Me.XTarget} > 0 && ${Me.Combat}) {
+	  /declare x int local
+	  /for x 1 to ${Me.XTarget}
+        /if (${Spawn[${Me.XTarget[${x}]}].CurrentHPs} < 75) {
+		  /bc hmmmmmmm ${Spawn[${Me.XTarget[${x}]}].CurrentHPs}
+		  /varset doNuke TRUE
+		  
+		} else {
+		  /varset doNuke FALSE
+		}
+      /next x
+	} else {
+	  /varset doNuke FALSE
+	}
+  } else {
+  }
+/return ${doNuke}
+
+Sub LifeTap
+  /if (${Me.PctHPs}< 50  && ${Me.PctHPs} <  75 ) {
+    /call Cast "Dire Declaration"
+	
+  } else /if (${Me.PctHPs}< 50 && ${Me.PctHPs} <  75) {
+    /call Cast "Touch of Lutzen"
+    
+  }
+/return
+
+Sub DOTS
+		
+   /if (${Me.Combat} && !${Me.Sitting} ) {
+
+    /if (${Me.SpellReady[Bond of Xalgoz]} && !${Target.Buff[Bond of Xalgoz].ID} ) {
+	  /cast 2
+	  /call FinishCasting
+	} else /if (${Me.SpellReady[Bond of Bonemaw]} && !${Target.Buff[Bond of Bonemaw].ID} ) {
+	  /cast 1
+	  /call FinishCasting
+	} else /if (${Me.SpellReady[Bond of Vulak]} && !${Target.Buff[Bond of Vulak].ID} ) {
+	  /cast 6
+	  /call FinishCasting
+	}
+
+  }
+/return
+
+Sub CastDot (s)
+  /echo ${s} - target: ${Target.Buff[${s}].ID} ready?: ${Me.SpellReady[${s}]}
+  
+  /if (!${Target.Buff[${s}].ID}) {
+    /if (${Me.SpellReady[${s}]}) {
+	  /echo ${s}
+	  /cast ${s}
+	  
+	  :CastingLoop
+	  /if (${Me.Casting}) /goto :CastingLoop
+	}
+  }
+/return
+
+Sub Cast(sp)
+  /if ( ${Me.SpellReady[${sp}]} ) {
+    /cast ${s}
+	:TapLoop
+	/if (${Me.Casting}) /goto :TapLoop
+  }
+/return
+
+Sub SelfBuffs
+  
+  /if (!${Me.Buff[Defiant Stance].ID}) {
+      
+      /if ( ${Me.SpellReady[5]} ) {
+	    /casting "Defiant Stance"
+	  }
+     
+  } else /if ( !${Me.Buff[Concordant Disruption].ID} ) {
+  
+      /if ( ${Me.SpellReady[Concordant Disruption]} ) {
+	    /casting "Concordant Disruption"
+	  }
+      
+  } else /if ( !${Me.Buff[Spectre Skin].ID} ) {
+  
+      /if ( ${Me.SpellReady[Spectre Skin]} ) {
+	    /casting "Spectre Skin"
+	  }
+      
+  } else /if ( !${Me.Buff[Drape of the Fallen].ID} ) {
+  
+      /if ( ${Me.SpellReady[Drape of the Fallen]} ) {
+	    /casting "Drape of the Fallen"
+	  }
+      
+  }
+  
+/return
+
+Sub FinishCasting
+  :casting
+    /doevents
+  /if (${Me.Casting.ID}) /goto :casting
+/return
