@@ -1,8 +1,4 @@
-/*
-  HTML ATTRIBUTE PROPERY FUNCTIONS
-*/
-
-function attr(t, v){
+function attr(t, v = ""){
   return {attribute: t, value: v}
 }
 
@@ -15,6 +11,9 @@ function id(v){
   return {attribute: "id", value: v}
 }
 
+function readonly(){
+  return {attribute: "readonly", value: ""}
+}
 /*
   BASIC HTML OBJECTS
 */
@@ -46,12 +45,11 @@ function a(attributes, content) {
 
 function div(attributes, content) {
     var element = document.createElement("div")
-    var i;
-    var ci;
-    for ( i =0; i<attributes.length; i++ ) {
+     
+    for (var i =0; i<attributes.length; i++ ) {
       $(element).attr(attributes[i].attribute, attributes[i].value)
     }
-    for (ci=0; ci<content.length; ci++) {
+    for (var ci=0; ci<content.length; ci++) {
       $(element).append(content[ci])
     }
   return $(element)
@@ -69,8 +67,6 @@ function form(attributes, content) {
     }
   return $(element)
 }
-
-
 
 function i(attributes, content) {
     var element = document.createElement("div")
@@ -98,9 +94,8 @@ function img(attributes) {
 
 function input(attributes) {
     var element = document.createElement("input")
-    var i;
     
-    for ( i =0; i<attributes.length; i++ ) {
+    for (var i =0; i<attributes.length; i++ ) {
       $(element).attr(attributes[i].attribute, attributes[i].value)
     }
     
@@ -202,6 +197,17 @@ function span(attributes, content) {
 
 function text(string) {
   return string
+}
+
+function h4(attributes, content) {
+  var element = document.createElement("h4")
+  for(var i=0; i<attributes.length;i++){
+    $(element).attr(attributes[i].attribute, attributes[i].value)
+  }
+  for(var ci=0;ci<content.length;ci++){
+    $(element).append(content[ci])
+  }
+  return $(element)
 }
 
 function h5(attributes, content) {
